@@ -1,0 +1,55 @@
+#include<stdio.h>
+
+//TIPOS DE HABITACIÓN
+typedef enum{
+    Sencilla=1,
+    Doble,
+    Suite
+}TipoHabitacion;
+
+//ESTADO DE HABITACIÓN
+typedef enum{
+    Disponible=0,
+    Ocupada,
+    Mantenimiento
+}EstadoHabitacion;
+
+//ID DE HABITACIÓN
+typedef union{
+    int CodigoNumerico; //Para habitaciones sencillas
+    char Letra; //Para habitaciones dobles y suites
+}Identificador;
+
+//ESTRUCTURA HABITACIÓN
+typedef struct{
+    int Numero;
+    float Precio;
+    EstadoHabitacion Estado;
+    TipoHabitacion Tipo;
+    Identificador ID;
+}Habitacion;
+
+#define TOTAL 20
+
+void InicializarHabitaciones(Habitacion habitaciones[]){
+    for(int i=0; i<TOTAL; i++){
+        habitaciones[i].Numero=i+1; //Inicia correctamente en 1
+
+        if(i<10){
+            habitaciones[i].Tipo=Sencilla;
+            habitaciones[i].Precio=550.50;
+            habitaciones[i].ID.CodigoNumerico=100+i; //Cada habitación tiene ID único
+        }
+        else if(i<16){
+            habitaciones[i].Tipo=Doble;
+            habitaciones[i].Precio=890.90;
+            habitaciones[i].ID.Letra='A'+(i-10); //Empieza en A hasta F
+        }
+        else{
+            habitaciones[i].Tipo=Suite;
+            habitaciones[i].Precio=1500.50;
+            habitaciones[i].ID.Letra='Z'-(19-i); //Empieza en U hasta Z
+        }
+        habitaciones[i].Estado=Disponible;
+    }
+    printf("\nTamaño de la estructura Habitación: %zu bytes\n", sizeof(Habitacion));
