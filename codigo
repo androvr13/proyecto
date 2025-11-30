@@ -53,3 +53,146 @@ void InicializarHabitaciones(Habitacion habitaciones[]){
         habitaciones[i].Estado=Disponible;
     }
     printf("\nTamaño de la estructura Habitación: %zu bytes\n", sizeof(Habitacion));
+
+void MostrarHabitacionesLibres(Habitacion habitaciones[]){
+    printf("Habitaciones Disponibles \n\n");
+    int contador = 0;
+    for(int i=0; i<TOTAL; i++){
+        //para ver que tipo de habitacion quieren
+        if(habitaciones[i].Estado == Disponible){
+            contador++;
+            printf("HABITACION # %d\n", habitaciones[i].Numero);
+            
+            //si piden sencilla
+            if (habitaciones[i].Tipo == Sencilla){
+                printf("HABITACION TIPO SENCILLA | ID: %d\n",habitaciones[i].ID.CodigoNumerico);
+            }
+            // si piden doble
+            else if (habitaciones[i].Tipo == Doble){
+                printf("HABITACION TIPO DOBLE | ID: %d\n", habitaciones[i].ID.CodigoNumerico);
+            }
+            else if (habitaciones[i].Tipo == Suite){
+                printf("HABITACION TIPO SUITE | ID: %d\n", habitaciones[i].ID.CodigoNumerico);
+            }
+            else {
+                printf("Favor de ingresar otra habitacion: \n");
+            }
+            printf("precio : %.2f, (Redondeado: $%d)\n", habitaciones[i].Precio, (int)habitaciones[i].Precio);
+        }
+    }
+
+    if(contador == 0){
+        printf("No hay habitaciones disponibles.\n");
+    }
+    else{
+        printf("Total de habitaciones disponibles: %d\n", contador);
+    }
+}
+
+void ReservarHabitacion(Habitacion habitaciones[]){
+    int numero;
+    printf(" RESERVAR HABITACIÓN \n\n");
+    printf("Ingrese el número de habitación (1-%d): ", TOTAL);
+    scanf("%d", &numero);
+    
+    if(numero < 1 || numero > TOTAL){
+        printf("Número de habitación inválido.\n");
+        return;
+    }
+    
+    int indice = numero - 1;
+    
+    switch(habitaciones[indice].Estado){
+        case Disponible:
+            habitaciones[indice].Estado = Ocupada;
+            printf(" Habitación # %d reservada exitosamente.\n", numero);
+            printf("Precio: $ %.2f\n", habitaciones[indice].Precio);
+            break;
+        case Ocupada:
+            printf(" La habitación ya está ocupada.\n");
+            break;
+        case Mantenimiento:
+            printf(" La habitación está en mantenimiento.\n");
+            break;
+    }
+}
+//libera habitaciones
+void LiberarHabitacion(Habitacion habitaciones[]){
+    int numero;
+    printf("LIBERAR HABITACIÓN \n\n");
+    printf("Ingrese el número de habitación (1-%d): ", TOTAL);
+    scanf("%d", &numero);
+    
+    if(numero < 1 || numero > TOTAL){
+        printf("Número de habitación inválido.\n");
+        return;
+    }
+    
+    int indice = numero - 1;
+    
+    if(habitaciones[indice].Estado == Ocupada){
+        habitaciones[indice].Estado = Disponible;
+        // Conversión implícita: float a int
+        int precioEntero = habitaciones[indice].Precio;
+        printf("Habitación # %d liberada exitosamente.\n", numero);
+        printf("Cobro total: $ %.2f (Conversión implícita: $%d)\n", habitaciones[indice].Precio, precioEntero);
+    }
+    else if(habitaciones[indice].Estado == Disponible){
+        printf("Esta habitación ya está disponible.\n");
+    }
+    else{
+        printf("Esta habitación está en mantenimiento.\n");
+    }
+
+}
+
+void MostrarEstadoGeneral(Habitacion habitaciones[]){
+    int disponibles = 0, ocupadas = 0, mantenimiento = 0;
+    
+    printf("ESTADO GENERAL DEL HOTEL \n\n");
+    printf("\n%-5s %-10s %-15s %-10s %-10s\n", "Num", "Tipo", "ID", "Precio", "Estado");
+    
+    for(int i=0; i<TOTAL; i++){
+        printf("%-5d ", habitaciones[i].Numero);
+        
+        // Uso de switch con enum para mostrar tipo
+        switch(habitaciones[i].Tipo){
+            case Sencilla:
+                printf("%-10s ", "Sencilla");
+                printf("%-15d ", habitaciones[i].ID.CodigoNumerico);
+                break;
+            case Doble:
+                printf("%-10s ", "Doble");
+                printf("%-15c ", habitaciones[i].ID.Letra);
+                break;
+            case Suite:
+                printf("%-10s ", "Suite");
+                printf("%-15c ", habitaciones[i].ID.Letra);
+                break;
+        }
+        
+        printf("$%-9.2f ", habitaciones[i].Precio);
+        
+        // Uso de switch con enum para mostrar estado
+        switch(habitaciones[i].Estado){
+            case Disponible:
+                printf("Disponible\n");
+                disponibles++;
+                break;
+            case Ocupada:
+                printf("Ocupada\n");
+                ocupadas++;
+                break;
+            case Mantenimiento:
+                printf("Mantenimiento\n");
+                mantenimiento++;
+                break;
+        }
+    }
+    
+    printf("\ RESUMEN \n\n");
+    printf("Disponibles: %d\n", disponibles);
+    printf("Ocupadas: %d\n", ocupadas);
+    printf("En mantenimiento: %d\n", mantenimiento);
+    printf("Total: %d\n", TOTAL);
+}
